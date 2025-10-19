@@ -4677,7 +4677,7 @@ LPH_JIT_MAX(function() -- Main Cheat
             hopServers()
         end
 
-        return startvotekick(username, delay, votes)
+        hopServers()
     end
 
     local lastSpamIndex;
