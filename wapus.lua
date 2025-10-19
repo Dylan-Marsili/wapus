@@ -4667,11 +4667,17 @@ LPH_JIT_MAX(function() -- Main Cheat
 		end
     end
 
-    callbackList["Server Hopper%%Server Hop"] = function()
-        wapus:SetValue("Server Hopper", "Server Hop", false)
-        hopServers()
-    end
+    callbackList["Server Hopper%%Server Hop"] = function(value)
+        if not value then
+            return
+        end
 
+        hopServers()
+
+        task.defer(function()
+            wapus:SetValue("Server Hopper", "Server Hop", false)
+        end)
+    end
     local startvotekick = networkConnections.startvotekick
     function networkConnections.startvotekick(username, delay, votes)
         if wapus:GetValue("Server Hopper", "Server Hop On Votekick") and username == localPlayer.Name then -- this should work mf
