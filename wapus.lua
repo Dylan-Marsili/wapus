@@ -4667,12 +4667,9 @@ LPH_JIT_MAX(function() -- Main Cheat
 		end
     end
 
-    callbackList["Server Hopper%%Server Hop"] = function()
-        hopServers()
-    end
-    
-    table.insert(connectionList, game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-        if gameProcessed then
+    local userInputForHop = game:GetService("UserInputService")
+    table.insert(connectionList, userInputForHop.InputBegan:Connect(function(input, gameProcessedEvent)
+        if gameProcessedEvent then
             return
         end
 
@@ -4680,6 +4677,11 @@ LPH_JIT_MAX(function() -- Main Cheat
             hopServers()
         end
     end))
+
+    callbackList["Server Hopper%%Server Hop"] = function()
+        hopServers()
+    end
+
 
     local startvotekick = networkConnections.startvotekick
     function networkConnections.startvotekick(username, delay, votes)
