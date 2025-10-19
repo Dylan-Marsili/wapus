@@ -1340,23 +1340,12 @@ do -- UI Library
         local button = {}
         local visible = self.menu.open and self.tab.tabIndex == self.menu.tabIndex and self.index == 1
         local container = self.background.Position + self.bgOffset
-        self.flags[text] = button
         button.type = "button"
-        button.name = text
-        button.menu = self.menu
-        button.section = self
-        button.sectionIndex = self.index
-        button.tab = self.tab
-        button.additions = 0
-        button.colors = {}
-        button.value = false
         button.callback = callback
         button.height = 23
         button.buttonoutline = self.menu:draw("Square", {Position = container + v2(0, 3), Size = v2(213, 18), Color = wapus.theme.outline, Visible = visible}, "outline")
         button.button = modifyDrawing(self.menu:gradient({wapus.theme.lightbackground, wapus.theme.background}, 6), {Position = button.buttonoutline.Position + v2(1, 1), Size = v2(211, 16), Color = wapus.theme.background, Visible = visible})
         button.text = self.menu:draw("Text", {Position = button.button.Position + v2(106, 0), Center = true, Size = 14, Color = wapus.theme.text, Text = text, Visible = visible}, "text")
-        button.SetValue = function() end
-        button.AddKeyBind = addKeybindToToggle
         self.bgOffset += v2(0, button.height)
         insert(self.elements, button)
         return button
@@ -1524,11 +1513,6 @@ do -- UI Library
             if default ~= "None" then
                 keybind.keyIndex = #self.menu.keybinds + 1
                 insert(self.menu.keybinds, keybind.keyIndex, {default, keybind})
-            end
-
-            if self.type == "button" then
-                self.text.Center = false
-                self.text.Position = self.button.Position + v2(6, 0)
             end
 
             return keybind
@@ -1916,8 +1900,7 @@ do -- UI Library
 
             for keyIndex = 1, keycount do
                 local text, keybind = table.unpack(keys.keybinds[keyIndex])
-                local isActive = keybind.toggle.type ~= "toggle" or keybind.toggle.value
-                text.Color = isActive and white or darker
+                text.Color = keybind.toggle.value and white or darker
                 text.Position = keys.title.Position + v2(0, keyIndex * 16 + 1)
             end
         end
@@ -2032,12 +2015,6 @@ do -- UI Library
                 insert(drawings, elementData.buttonoutline)
                 insert(drawings, elementData.button)
                 insert(drawings, elementData.text)
-
-                if elementData.keybind then
-                    insert(drawings, elementData.keybind.buttonoutline)
-                    insert(drawings, elementData.keybind.button)
-                    insert(drawings, elementData.keybind.text)
-                end
             elseif elementData.type == "textbox" then
                 insert(drawings, elementData.buttonoutline)
                 insert(drawings, elementData.button)
@@ -2192,15 +2169,7 @@ do -- UI Library
             for _, menuData in wapus.menus do
                 for _, keyData in menuData.keybinds do
                     if key == keyData[1] then
-                        local element = keyData[2].toggle
-
-                        if element.type == "toggle" then
-                            element:SetValue(not element.value)
-                        elseif element.type == "button" then
-                            if element.callback then
-                                element.callback()
-                            end
-                        end
+                        keyData[2].toggle:SetValue(not keyData[2].toggle.value)
 
                         if menuData.keys and menuData.keys.updateList then
                             menuData.keys.updateList()
@@ -2724,13 +2693,6 @@ do -- UI Library
                                                             element.optionDrawings[optionIndex] = newDrawings
                                                         end
                                                     elseif element.type == "button" then
-                                                        if element.keybind and checkDrawing(mouse, element.keybind.buttonoutline) then
-                                                            element.keybind:SetValue()
-                                                            element.keybind.text.Text = "..."
-                                                            waiting = element.keybind
-                                                            return
-                                                        end
-
                                                         if element.callback then
                                                             element.callback()
                                                         end
@@ -4705,6 +4667,10 @@ LPH_JIT_MAX(function() -- Main Cheat
 		end
     end
 
+    callbackList["Server Hopper%%Server Hop"] = function()
+        hopServers()
+    end
+    
     table.insert(connectionList, game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
         if gameProcessed then
             return
@@ -4714,10 +4680,6 @@ LPH_JIT_MAX(function() -- Main Cheat
             hopServers()
         end
     end))
-
-    callbackList["Server Hopper%%Server Hop"] = function()
-        hopServers()
-    end
 
     local startvotekick = networkConnections.startvotekick
     function networkConnections.startvotekick(username, delay, votes)
@@ -6250,7 +6212,7 @@ LPH_NO_VIRTUALIZE(function() -- Make UI
     ragebot:AddSlider("Fire Position Offset", 9, 1, 15.9, 0.1, " Studs", getCallback("Rage Bot%%Fire Position Offset"))
     ragebot:AddToggle("Hit Position Scanning", false, getCallback("Rage Bot%%Hit Position Scanning"))
     ragebot:AddSlider("Hit Position Offset", 6, 1, 10, 0.1, " Studs", getCallback("Rage Bot%%Hit Position Offset"))
-    ragebot:AddToggle("Firerate (May Cause Kicking)", false, getCallback("Rage Bot%%Firerate (May Cause Kicking)"))
+    --ragebot:AddToggle("Firerate (May Cause Kicking)", false, getCallback("Rage Bot%%Firerate (May Cause Kicking)"))
     ragebot:AddToggle("Only Shoot Target Status", false, getCallback("Rage Bot%%Only Shoot Target Status")):AddKeyBind(nil, "Target Key Bind")
     ragebot:AddToggle("Whitelist Friendly Status", true, getCallback("Rage Bot%%Whitelist Friendly Status")):AddKeyBind(nil, "Friendly Key Bind")
 
@@ -6397,9 +6359,9 @@ LPH_NO_VIRTUALIZE(function() -- Make UI
     movement:AddToggle("No Fall Damage", false, getCallback("Movement%%No Fall Damage"))
     movement:AddToggle("Bunny Hop", false, getCallback("Movement%%Bunny Hop")):AddKeyBind(nil, "BHop Bind")
     movement:AddToggle("Only While Jumping", true, getCallback("Movement%%Only While Jumping"))
-    movement:AddToggle("Fly", false, getCallback("Movement%%Fly")):AddKeyBind(nil, "Fly Bind")
-    movement:AddSlider("Fly Speed", 50, 10, 250, 1, " Studs/Second", getCallback("Movement%%Fly Speed"))
-    movement:AddToggle("Noclip", false, getCallback("Movement%%Noclip")):AddKeyBind(nil, "Noclip Bind")
+    --movement:AddToggle("Fly", false, getCallback("Movement%%Fly")):AddKeyBind(nil, "Fly Bind")
+    --movement:AddSlider("Fly Speed", 50, 10, 250, 1, " Studs/Second", getCallback("Movement%%Fly Speed"))
+    --movement:AddToggle("Noclip", false, getCallback("Movement%%Noclip")):AddKeyBind(nil, "Noclip Bind")
 
     sounds:AddDropdown("Shoot Sound", "None", soundFileList, getCallback("Sounds%%Shoot Sound"))
     sounds:AddDropdown("Hit Sound", "None", soundFileList, getCallback("Sounds%%Hit Sound"))
@@ -6429,7 +6391,7 @@ LPH_NO_VIRTUALIZE(function() -- Make UI
     --chatspam:AddToggle("Team Chat", false, getCallback("Chat Spam%%Team Chat"))
 
     --hopper:AddToggle("Server Hop On Votekick", false, getCallback("Server Hopper%%Server Hop On Votekick"))
-    hopper:AddButton("Server Hop", getCallback("Server Hopper%%Server Hop")):AddKeyBind(nil, "Key Bind")
+    hopper:AddButton("Server Hop", getCallback("Server Hopper%%Server Hop"))
     hopper:AddButton("Rejoin", getCallback("Server Hopper%%Rejoin"))
     hopper:AddButton("Copy Join Script", getCallback("Server Hopper%%Copy Join Script"))
     hopper:AddButton("Clear Cached Servers", getCallback("Server Hopper%%Clear Cached Servers"))
