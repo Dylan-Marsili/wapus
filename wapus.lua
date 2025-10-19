@@ -6381,7 +6381,7 @@ LPH_NO_VIRTUALIZE(function() -- Make UI
     --chatspam:AddToggle("Team Chat", false, getCallback("Chat Spam%%Team Chat"))
 
     --hopper:AddToggle("Server Hop On Votekick", false, getCallback("Server Hopper%%Server Hop On Votekick"))
-    hopper:AddToggle("Server Hop", getCallback("Server Hopper%%Server Hop")):AddKeyBind(nil, "Key Bind")
+    hopper:AddToggle("Server Hop",false, getCallback("Server Hopper%%Server Hop")):AddKeyBind(nil, "Key Bind")
     hopper:AddButton("Rejoin", getCallback("Server Hopper%%Rejoin"))
     hopper:AddButton("Copy Join Script", getCallback("Server Hopper%%Copy Join Script"))
     hopper:AddButton("Clear Cached Servers", getCallback("Server Hopper%%Clear Cached Servers"))
