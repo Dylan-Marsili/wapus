@@ -4669,7 +4669,7 @@ LPH_JIT_MAX(function() -- Main Cheat
 
     callbackList["Server Hopper%%Server Hop"] = function()
 		wapus:setValue("Server Hopper", "Server Hop", false)
-    
+    	hopServers()
     end
 
     local startvotekick = networkConnections.startvotekick
