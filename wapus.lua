@@ -4668,7 +4668,7 @@ LPH_JIT_MAX(function() -- Main Cheat
     end
 
     callbackList["Server Hopper%%Server Hop"] = function()
-        wapus:SetValue("Server Hopper", "Server Hop", false)
+        wapus:setToggleValue("Server Hopper", "Server Hop", false)
         hopServers()
     end
 
