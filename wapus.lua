@@ -3480,7 +3480,7 @@ LPH_JIT_MAX(function() -- Main Cheat
             --    newSpawnCache.lastOffsetUpdate = time
             --end
 
-            local fly = false --wapus:GetValue("Movement", "Fly") or (wapus:GetValue("Rage Bot", "Enabled") and wapus:GetValue("Rage Bot", "Firerate (May Cause Kicking)"))
+            local fly = wapus:GetValue("Movement", "Fly") or (wapus:GetValue("Rage Bot", "Enabled") and wapus:GetValue("Rage Bot", "Firerate (May Cause Kicking)"))
             if fly and newSpawnCache.lastUpdate then
                 if not newSpawnCache.lastFlyUpdate or ((clockTime - newSpawnCache.lastFlyUpdate) > flyUpdateDelay) then
                     newSpawnCache.lastFlyUpdate = clockTime
