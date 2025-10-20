@@ -3480,18 +3480,18 @@ LPH_JIT_MAX(function() -- Main Cheat
             --    newSpawnCache.lastOffsetUpdate = time
             --end
 
-            --local fly = false --wapus:GetValue("Movement", "Fly") or (wapus:GetValue("Rage Bot", "Enabled") and wapus:GetValue("Rage Bot", "Firerate (May Cause Kicking)"))
-            --if fly and newSpawnCache.lastUpdate then
-            --    if not newSpawnCache.lastFlyUpdate or ((clockTime - newSpawnCache.lastFlyUpdate) > flyUpdateDelay) then
-            --        newSpawnCache.lastFlyUpdate = clockTime
-            --        send(self, name, newSpawnCache.lastUpdate, angles, angles2, time + newSpawnCache.latency + newSpawnCache.currentAddition)
-            --        send(self, name, position, angles, time + newSpawnCache.latency + newSpawnCache.currentAddition)
-            --        newSpawnCache.lastUpdateTime = time
-            --        newSpawnCache.lastUpdate = position
-            --    end
-            --
-            --    return
-            --end
+            local fly = false --wapus:GetValue("Movement", "Fly") or (wapus:GetValue("Rage Bot", "Enabled") and wapus:GetValue("Rage Bot", "Firerate (May Cause Kicking)"))
+            if fly and newSpawnCache.lastUpdate then
+                if not newSpawnCache.lastFlyUpdate or ((clockTime - newSpawnCache.lastFlyUpdate) > flyUpdateDelay) then
+                    newSpawnCache.lastFlyUpdate = clockTime
+                    send(self, name, newSpawnCache.lastUpdate, angles, angles2, time + newSpawnCache.latency + newSpawnCache.currentAddition)
+                    send(self, name, position, angles, time + newSpawnCache.latency + newSpawnCache.currentAddition)
+                    newSpawnCache.lastUpdateTime = time
+                    newSpawnCache.lastUpdate = position
+                end
+            
+                return
+            end
 
             if wapus:GetValue("Movement", "Walk Speed") and newSpawnCache.lastUpdate then -- no patch pls :(
                 send(self, name, newSpawnCache.lastUpdate, angles, angles2, time + newSpawnCache.latency + newSpawnCache.currentAddition)
@@ -4250,16 +4250,16 @@ LPH_JIT_MAX(function() -- Main Cheat
         end
     end
 
-    --callbackList["Movement%%Fly"] = function(state)
-    --    if not state and charInterface.isAlive() then
-    --        local object = charInterface.getCharacterObject()
-    --        local rootPart = object and object:getRealRootPart()
-    --
-    --        if rootPart and rootPart.Anchored then
-    --            rootPart.Anchored = false
-    --        end
-    --    end
-    --end
+    callbackList["Movement%%Fly"] = function(state)
+        if not state and charInterface.isAlive() then
+            local object = charInterface.getCharacterObject()
+            local rootPart = object and object:getRealRootPart()
+    
+            if rootPart and rootPart.Anchored then
+                rootPart.Anchored = false
+            end
+        end
+    end
 
     callbackList["Tweaks%%Custom Kill Notification"] = function(state)
         hudnotify.typeList.kill[1] = state and wapus:GetValue("Tweaks", "Notification Text") or "Enemy Killed!"
@@ -5677,8 +5677,8 @@ LPH_JIT_MAX(function() -- Main Cheat
             end
         end
 
-        --[[
-        if false then --wapus:GetValue("Movement", "Fly") and rootPart then
+
+        if wapus:GetValue("Movement", "Fly") and rootPart then
             local cframe = camera.CFrame
             local direction = Vector3.zero
             local forward = cframe.LookVector
@@ -5715,7 +5715,7 @@ LPH_JIT_MAX(function() -- Main Cheat
                 rootPart.Velocity = direction.Unit * wapus:GetValue("Movement", "Fly Speed")
             end
         end
-        ]]
+
 
         if wapus:GetValue("Hit Boxes", "Enabled") then
             replicationInterface.operateOnAllEntries(function(player, entry)
@@ -6361,9 +6361,9 @@ LPH_NO_VIRTUALIZE(function() -- Make UI
     movement:AddToggle("No Fall Damage", false, getCallback("Movement%%No Fall Damage"))
     movement:AddToggle("Bunny Hop", false, getCallback("Movement%%Bunny Hop")):AddKeyBind(nil, "BHop Bind")
     movement:AddToggle("Only While Jumping", true, getCallback("Movement%%Only While Jumping"))
-    --movement:AddToggle("Fly", false, getCallback("Movement%%Fly")):AddKeyBind(nil, "Fly Bind")
-    --movement:AddSlider("Fly Speed", 50, 10, 250, 1, " Studs/Second", getCallback("Movement%%Fly Speed"))
-    --movement:AddToggle("Noclip", false, getCallback("Movement%%Noclip")):AddKeyBind(nil, "Noclip Bind")
+    movement:AddToggle("Fly", false, getCallback("Movement%%Fly")):AddKeyBind(nil, "Fly Bind")
+    movement:AddSlider("Fly Speed", 50, 10, 250, 1, " Studs/Second", getCallback("Movement%%Fly Speed"))
+    movement:AddToggle("Noclip", false, getCallback("Movement%%Noclip")):AddKeyBind(nil, "Noclip Bind")
 
     sounds:AddDropdown("Shoot Sound", "None", soundFileList, getCallback("Sounds%%Shoot Sound"))
     sounds:AddDropdown("Hit Sound", "None", soundFileList, getCallback("Sounds%%Hit Sound"))
